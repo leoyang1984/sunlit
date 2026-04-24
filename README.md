@@ -36,26 +36,37 @@ After installation, use the `sunlit` command directly. For source-tree developme
 
 ## Quick Start
 
-Run the sample analysis:
+Convert the London context footprints:
+
+```bash
+sunlit convert footprint \
+  examples/london-context.geojson \
+  --height-field height \
+  --default-height 20 \
+  --output sunlit-output/london/context.cityjson \
+  --crs EPSG:27700
+```
+
+Run the baseline analysis:
 
 ```bash
 sunlit analyze \
-  --context sample.cityjson \
-  --boundary tests/fixtures/sample-site.geojson \
-  --lat 52.0 --lon 4.36 \
+  --context sunlit-output/london/context.cityjson \
+  --boundary examples/london-site.geojson \
+  --lat 51.5 --lon -0.12 \
   --date 2026-01-20 \
   --time-start 09:00 --time-end 15:00 \
   --time-step 30 \
-  --grid-size 10 \
+  --grid-size 5 \
   --threshold 2 \
-  --timezone Europe/Amsterdam \
-  --output sunlit-output/quickstart
+  --timezone Europe/London \
+  --output sunlit-output/london/baseline
 ```
 
 Inspect the output:
 
 ```bash
-ls sunlit-output/quickstart
+ls sunlit-output/london/baseline
 ```
 
 Expected files:
@@ -73,11 +84,11 @@ For projected GeoJSON footprints with a height property:
 
 ```bash
 sunlit convert footprint \
-  tests/fixtures/building-footprints.geojson \
+  examples/london-context.geojson \
   --height-field height \
-  --default-height 8 \
-  --output sunlit-output/footprints.cityjson \
-  --crs EPSG:3857
+  --default-height 20 \
+  --output sunlit-output/london/context.cityjson \
+  --crs EPSG:27700
 ```
 
 ## Convert OBJ Footprints To CityJSON
@@ -86,8 +97,8 @@ For OBJ files where each `o` or `g` group is one building footprint face:
 
 ```bash
 sunlit convert obj \
-  tests/fixtures/simple-scheme.obj \
-  --meta tests/fixtures/meta-example.json \
+  examples/simple-scheme.obj \
+  --meta examples/meta-example.json \
   --output sunlit-output/scheme.cityjson
 ```
 
@@ -109,6 +120,7 @@ Current baseline:
 - [Preparing Data](docs/preparing-data.md)
 - [CLI Reference](docs/cli-reference.md)
 - [FAQ](docs/faq.md)
+- [Examples](examples/README.md)
 - [Document Archive](docs/archive/README.md)
 
 ## AI Skills

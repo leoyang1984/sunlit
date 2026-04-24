@@ -20,11 +20,11 @@ Command:
 
 ```bash
 sunlit convert footprint \
-  tests/fixtures/building-footprints.geojson \
+  examples/london-context.geojson \
   --height-field height \
-  --default-height 8 \
-  --output sunlit-output/footprints.cityjson \
-  --crs EPSG:3857
+  --default-height 20 \
+  --output sunlit-output/london/context.cityjson \
+  --crs EPSG:27700
 ```
 
 If a feature has no `height`, `--default-height` is used.
@@ -42,8 +42,8 @@ Command:
 
 ```bash
 sunlit convert obj \
-  tests/fixtures/simple-scheme.obj \
-  --meta tests/fixtures/meta-example.json \
+  examples/simple-scheme.obj \
+  --meta examples/meta-example.json \
   --output sunlit-output/scheme.cityjson
 ```
 

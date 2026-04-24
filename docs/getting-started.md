@@ -1,6 +1,6 @@
 # Getting Started
 
-This guide runs the current MVP sample from CityJSON to a report bundle.
+This guide runs the London footprint example from GeoJSON to CityJSON to a report bundle.
 
 ## 1. Check The CLI
 
@@ -14,40 +14,37 @@ Expected:
 sunlit 0.1.0
 ```
 
-## 2. Inspect The Sample CityJSON
+## 2. Convert Example Footprints
 
 ```bash
-sunlit inspect-cityjson sample.cityjson
-```
-
-Expected:
-
-```text
-Loaded 5 buildings
-Combined mesh: 4718 vertices, 5299 faces
-CRS: https://www.opengis.net/def/crs/EPSG/0/31467
+sunlit convert footprint \
+  examples/london-context.geojson \
+  --height-field height \
+  --default-height 20 \
+  --output sunlit-output/london/context.cityjson \
+  --crs EPSG:27700
 ```
 
 ## 3. Run Analysis
 
 ```bash
 sunlit analyze \
-  --context sample.cityjson \
-  --boundary tests/fixtures/sample-site.geojson \
-  --lat 52.0 --lon 4.36 \
+  --context sunlit-output/london/context.cityjson \
+  --boundary examples/london-site.geojson \
+  --lat 51.5 --lon -0.12 \
   --date 2026-01-20 \
   --time-start 09:00 --time-end 15:00 \
   --time-step 30 \
-  --grid-size 10 \
+  --grid-size 5 \
   --threshold 2 \
-  --timezone Europe/Amsterdam \
-  --output sunlit-output/getting-started
+  --timezone Europe/London \
+  --output sunlit-output/london/baseline
 ```
 
 ## 4. Read Outputs
 
 ```text
-sunlit-output/getting-started/
+sunlit-output/london/baseline/
 ├── analysis.json
 ├── heatmap.png
 ├── metadata.yaml

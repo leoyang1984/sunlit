@@ -49,11 +49,11 @@ Example:
 
 ```bash
 sunlit analyze \
-  --context sample.cityjson \
-  --boundary tests/fixtures/sample-site.geojson \
-  --lat 52.0 --lon 4.36 \
-  --timezone Europe/Amsterdam \
-  --output sunlit-output/example
+  --context sunlit-output/london/context.cityjson \
+  --boundary examples/london-site.geojson \
+  --lat 51.5 --lon -0.12 \
+  --timezone Europe/London \
+  --output sunlit-output/london/baseline
 ```
 
 `--points` is reserved and intentionally returns `Not implemented in MVP`.
@@ -63,11 +63,11 @@ sunlit analyze \
 Convert projected GeoJSON footprints to CityJSON LOD1.
 
 ```bash
-sunlit convert footprint GEOJSON_PATH \
+sunlit convert footprint examples/london-context.geojson \
   --height-field height \
-  --default-height 10 \
-  --output buildings.cityjson \
-  --crs EPSG:3857
+  --default-height 20 \
+  --output sunlit-output/london/context.cityjson \
+  --crs EPSG:27700
 ```
 
 ## `sunlit convert obj`

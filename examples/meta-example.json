@@ -1,0 +1,23 @@
+{
+  "crs": "EPSG:3857",
+  "origin": {
+    "x": 1000.0,
+    "y": 2000.0,
+    "elevation": 0.0
+  },
+  "rotation_degrees": 0,
+  "buildings": [
+    {
+      "obj_group": "Building_A",
+      "name": "Building A",
+      "height": 12.5,
+      "floors": 4
+    },
+    {
+      "obj_group": "Building_B",
+      "name": "Building B",
+      "floors": 3,
+      "floor_height": 3.0
+    }
+  ]
+}
