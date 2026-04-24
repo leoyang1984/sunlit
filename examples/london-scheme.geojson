@@ -1,0 +1,30 @@
+{
+  "type": "FeatureCollection",
+  "crs": { "type": "name", "properties": { "name": "EPSG:27700" } },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "id": "podium", "name": "Retail Podium", "height": 8 },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [530162, 180762], [530238, 180762],
+          [530238, 180838], [530162, 180838],
+          [530162, 180762]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "id": "tower", "name": "Office Tower", "height": 58 },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [530180, 180778], [530220, 180778],
+          [530220, 180822], [530180, 180822],
+          [530180, 180778]
+        ]]
+      }
+    }
+  ]
+}

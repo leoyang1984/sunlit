@@ -1,0 +1,54 @@
+{
+  "type": "FeatureCollection",
+  "crs": { "type": "name", "properties": { "name": "EPSG:27700" } },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "id": "south-office-tower", "name": "South Office Tower", "height": 42 },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [530155, 180690], [530245, 180690],
+          [530245, 180748], [530155, 180748],
+          [530155, 180690]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "id": "north-residential", "name": "North Residential Block", "height": 24 },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [530162, 180848], [530238, 180848],
+          [530238, 180892], [530162, 180892],
+          [530162, 180848]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "id": "east-hotel", "name": "East Hotel", "height": 30 },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [530256, 180772], [530292, 180772],
+          [530292, 180828], [530256, 180828],
+          [530256, 180772]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "id": "west-retail", "name": "West Retail Strip", "height": 16 },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [530108, 180768], [530148, 180768],
+          [530148, 180828], [530108, 180828],
+          [530108, 180768]
+        ]]
+      }
+    }
+  ]
+}

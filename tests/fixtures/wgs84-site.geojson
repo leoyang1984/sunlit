@@ -1,0 +1,18 @@
+{
+  "type": "Feature",
+  "properties": {
+    "name": "wgs84 boundary"
+  },
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [4.35, 52.0],
+        [4.36, 52.0],
+        [4.36, 52.01],
+        [4.35, 52.01],
+        [4.35, 52.0]
+      ]
+    ]
+  }
+}

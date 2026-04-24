@@ -1,0 +1,23 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "sample projected site boundary"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [3499940.0, 5399995.0],
+            [3500010.0, 5399995.0],
+            [3500010.0, 5400075.0],
+            [3499940.0, 5400075.0],
+            [3499940.0, 5399995.0]
+          ]
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "name": "Southbank Mixed-Use Site Boundary" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [530150, 180758],
+          [530250, 180758],
+          [530250, 180842],
+          [530150, 180842],
+          [530150, 180758]
+        ]]
+      }
+    }
+  ]
+}

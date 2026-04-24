@@ -1,0 +1,44 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "A",
+        "name": "Building A",
+        "height": 12.5
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [1000.0, 2000.0],
+            [1020.0, 2000.0],
+            [1020.0, 2015.0],
+            [1000.0, 2015.0],
+            [1000.0, 2000.0]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "B",
+        "name": "Building B"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [1040.0, 2000.0],
+            [1055.0, 2000.0],
+            [1055.0, 2010.0],
+            [1040.0, 2010.0],
+            [1040.0, 2000.0]
+          ]
+        ]
+      }
+    }
+  ]
+}

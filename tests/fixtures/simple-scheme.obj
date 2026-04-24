@@ -1,0 +1,13 @@
+# Two simple building footprint faces in local projected coordinates.
+o Building_A
+v 0.0 0.0 0.0
+v 20.0 0.0 0.0
+v 20.0 15.0 0.0
+v 0.0 15.0 0.0
+f 1 2 3 4
+g Building_B
+v 40.0 0.0 0.0
+v 55.0 0.0 0.0
+v 55.0 10.0 0.0
+v 40.0 10.0 0.0
+f 5 6 7 8

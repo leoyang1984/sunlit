@@ -1,0 +1,23 @@
+{
+  "crs": "EPSG:3857",
+  "origin": {
+    "x": 1000.0,
+    "y": 2000.0,
+    "elevation": 0.0
+  },
+  "rotation_degrees": 0,
+  "buildings": [
+    {
+      "obj_group": "Building_A",
+      "name": "1号楼",
+      "height": 12.5,
+      "floors": 4
+    },
+    {
+      "obj_group": "Building_B",
+      "name": "2号楼",
+      "floors": 3,
+      "floor_height": 3.0
+    }
+  ]
+}
