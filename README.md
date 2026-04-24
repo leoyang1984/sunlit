@@ -15,6 +15,16 @@ It analyzes sunlight duration on ground grid points inside a site boundary and w
 
 If you need formal permitting output, use professional sunlight analysis software.
 
+## Install From GitHub
+
+```bash
+git clone https://github.com/leoyang1984/sunlit.git
+cd sunlit
+python3 -m venv .venv
+.venv/bin/python -m pip install -e .
+.venv/bin/sunlit version
+```
+
 ## Install For Local Development
 
 ```bash

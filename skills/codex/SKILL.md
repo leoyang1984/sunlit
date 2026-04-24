@@ -21,13 +21,11 @@ Use language such as "reaches the user-defined threshold" or "reference result".
 
 ## Locate The Project
 
-Prefer the current working directory. Fallback to the known local workspace path.
+Prefer the current working directory. If the current directory is not the project root, ask the user for the local `sunlit` project path.
 
 ```bash
 if [ -f "src/sunlit/cli.py" ]; then
   SUNLIT_ROOT="$(pwd)"
-elif [ -f "/Volumes/外部硬盘/agent-skills/2026_Career_Data_Warehouse/cityjson/src/sunlit/cli.py" ]; then
-  SUNLIT_ROOT="/Volumes/外部硬盘/agent-skills/2026_Career_Data_Warehouse/cityjson"
 else
   echo "ERROR: Cannot find sunlit project."
   exit 1
