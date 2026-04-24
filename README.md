@@ -120,6 +120,7 @@ Current baseline:
 - [Preparing Data](docs/preparing-data.md)
 - [CLI Reference](docs/cli-reference.md)
 - [FAQ](docs/faq.md)
+- [Future DXF Clean Input Protocol](docs/dxf-clean-input-protocol.md)
 - [Examples](examples/README.md)
 - [Document Archive](docs/archive/README.md)
 
