@@ -1,0 +1,36 @@
+project:
+  location:
+    city: Shanghai
+    lat: 31.23
+    lon: 121.47
+    timezone: Asia/Shanghai
+
+cad:
+  file: project_clean.dxf
+  unit: m
+  north_angle: 0
+
+layers:
+  site: 红线
+
+  context:
+    周边建筑_低层:
+      height: 12
+    周边建筑_高层:
+      height: 54
+    场地内保留建筑:
+      height: 18
+
+  scheme:
+    方案塔楼:
+      height: 72
+    方案裙房:
+      height: 8
+
+analysis:
+  date: 2026-01-20
+  time_start: "09:00"
+  time_end: "15:00"
+  time_step: 30
+  grid_size: 3
+  threshold: 2

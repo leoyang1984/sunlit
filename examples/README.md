@@ -86,3 +86,18 @@ sunlit convert obj \
   --meta examples/meta-example.json \
   --output sunlit-output/obj/scheme.cityjson
 ```
+
+## DXF Clean Input Spike
+
+`examples/dxf/` is an early spike for the future DXF workflow. `sunlit convert dxf` is not implemented yet.
+
+It verifies the planned first-version product principle:
+
+```text
+User cleans CAD geometry.
+AI writes a readable sunlit.yaml.
+User reviews the YAML.
+sunlit runs deterministic conversion and analysis.
+```
+
+See [examples/dxf/README.md](dxf/README.md).
