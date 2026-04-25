@@ -59,11 +59,11 @@ def test_cli_analyze_writes_output_files(tmp_path):
     assert summary_path.exists()
     assert metadata_path.exists()
     assert heatmap_path.read_bytes().startswith(b"\x89PNG")
-    data = json.loads(analysis_path.read_text())
+    data = json.loads(analysis_path.read_text(encoding="utf-8"))
     assert data["statistics"]["total_points"] == 42
     assert data["statistics"]["qualified_points"] == 10
-    assert "地面日照分析报告" in summary_path.read_text()
-    assert "analysis: analysis.json" in metadata_path.read_text()
+    assert "地面日照分析报告" in summary_path.read_text(encoding="utf-8")
+    assert "analysis: analysis.json" in metadata_path.read_text(encoding="utf-8")
 
 
 def test_cli_points_is_not_implemented():

@@ -38,12 +38,11 @@ def test_write_report_files(tmp_path):
         timezone_name="Europe/Amsterdam",
     )
 
-    summary = summary_path.read_text()
-    metadata = metadata_path.read_text()
+    summary = summary_path.read_text(encoding="utf-8")
+    metadata = metadata_path.read_text(encoding="utf-8")
     assert "# 地面日照分析报告" in summary
     assert "## 统计结果" in summary
     assert result.disclaimer in summary
     assert "context_sha256:" in metadata
     assert file_sha256(SAMPLE_CITYJSON) in metadata
     assert "summary: summary.md" in metadata
-
