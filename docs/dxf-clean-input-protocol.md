@@ -4,21 +4,33 @@ Status: future development guide. `sunlit convert dxf` is not implemented yet.
 
 This document records the product boundary for future DXF support.
 
-## Principle
+## Product Principle
 
 `sunlit` should not try to understand every messy CAD drawing automatically.
 
-Instead, the user should spend a few minutes preparing a clean DXF input. The tool can then provide a stable, predictable conversion path.
+Instead, the first DXF workflow should use this division of labor:
+
+```text
+User cleans CAD geometry.
+AI writes a readable YAML configuration.
+User reviews the YAML.
+sunlit runs deterministic conversion and analysis.
+```
+
+This is the formal product principle for early DXF support.
+
+The AI should not edit or reorganize the CAD file in the first version. Editing geometry is risky because a wrong layer move, deleted object, or missed footprint can be hard to detect. YAML is safer: it is short, human-readable, and easy for the user to review.
 
 This is intentional:
 
 - CAD files vary too much across teams, regions, and drawing habits.
 - Automatically adapting to every layer convention, broken polyline, text style, block attribute, unit, and annotation pattern would create large implementation cost.
 - A short user cleanup step is cheaper and more reliable than weeks of fragile CAD inference logic.
+- AI-generated YAML is easier to audit than AI-edited CAD geometry.
 
 Product promise:
 
-`sunlit` converts a clean, documented CAD subset into analysis inputs. It does not promise to parse arbitrary production CAD sheets.
+`sunlit` converts a clean, documented CAD subset into analysis inputs. It does not promise to parse arbitrary production CAD sheets or to automatically clean CAD drawings.
 
 ## User Responsibility
 
@@ -30,29 +42,28 @@ project_sunlit_clean.dxf
 
 The cleaned file should contain only the geometry needed for analysis.
 
-Recommended layers:
+The user may keep their own layer names. English `SUNLIT_*` names are optional, not required.
+
+Typical cleaned layers may look like:
+
+```text
+红线
+周边建筑_低层
+周边建筑_高层
+场地内保留建筑
+方案塔楼
+方案裙房
+```
+
+Or:
 
 ```text
 SUNLIT_SITE
-SUNLIT_CONTEXT
-SUNLIT_SCHEME
-SUNLIT_HEIGHT
-SUNLIT_NORTH
-```
-
-Minimum layers:
-
-```text
-SUNLIT_SITE
-SUNLIT_CONTEXT
-```
-
-Optional:
-
-```text
-SUNLIT_SCHEME
-SUNLIT_HEIGHT
-SUNLIT_NORTH
+SUNLIT_CONTEXT_LOW
+SUNLIT_CONTEXT_HIGH
+SUNLIT_EXISTING_ON_SITE
+SUNLIT_SCHEME_TOWER
+SUNLIT_SCHEME_PODIUM
 ```
 
 ## Required Cleanup
@@ -60,15 +71,71 @@ SUNLIT_NORTH
 Before running `sunlit`, the user should:
 
 - Put the site boundary on one dedicated layer.
-- Put existing/context building footprints on one dedicated layer.
-- Put proposed/scheme building footprints on one dedicated layer, if any.
+- Put surrounding/context building footprints on clear layers.
+- Put existing buildings inside the site on clear layers, if they remain in the baseline.
+- Put proposed/scheme building footprints on clear layers, if any.
+- Group buildings by approximate height where practical.
 - Use closed polylines for site and building footprints.
 - Remove or hide roads, landscape, hatches, dimensions, title blocks, grids, furniture, and unrelated text.
-- Make building heights explicit by layer name, nearby text, or a separate table.
 - Confirm whether CAD units are meters, millimeters, or another scale.
 - Confirm north direction.
 
 The user does not need to provide a real GIS CRS for typical CAD workflows.
+
+## YAML Configuration
+
+The AI agent should turn the user's description into a `sunlit.yaml` file.
+
+The user should be able to review this file before running analysis.
+
+First-version YAML should use one clear idea:
+
+```text
+Each configured CAD layer has a role and a height.
+```
+
+Example:
+
+```yaml
+project:
+  location:
+    city: Shanghai
+    lat: 31.23
+    lon: 121.47
+    timezone: Asia/Shanghai
+
+cad:
+  file: project_sunlit_clean.dxf
+  unit: m
+  north_angle: 0
+
+layers:
+  site: 红线
+
+  context:
+    周边建筑_低层:
+      height: 12
+    周边建筑_高层:
+      height: 54
+    场地内保留建筑:
+      height: 18
+
+  scheme:
+    方案塔楼:
+      height: 72
+    方案裙房:
+      height: 8
+
+analysis:
+  date: 2026-01-20
+  time_start: "09:00"
+  time_end: "15:00"
+  time_step: 30
+  grid_size: 3
+  threshold: 2
+```
+
+Do not expose multiple height modes in the first user-facing workflow. Internally this is a layer-based configuration, but the user-facing rule is simply: write the layer and its height in YAML.
 
 ## Coordinate Model
 
@@ -108,65 +175,24 @@ For a reliable DXF workflow, the user or AI agent should collect:
 - CAD unit, such as `m` or `mm`;
 - north direction, such as `north is +Y` or `north-angle 18`;
 - site boundary layer;
-- context building layer;
-- scheme building layer, if any;
-- height source.
+- surrounding/context building layers and their heights;
+- existing on-site building layers and their heights, if any;
+- scheme building layers and their heights, if any.
 
 AI may infer approximate latitude, longitude, and timezone from a city or address for design-stage analysis. The user should confirm exact coordinates for higher-stakes work.
 
-## Height Modes
-
-Future implementation should start with simple, explicit height modes.
-
-Suggested first version:
-
-```text
-layer-name
-fixed-default
-```
-
-Possible later versions:
-
-```text
-nearest-text
-block-attribute
-csv-table
-```
-
-Examples:
-
-- Layer naming: `SUNLIT_CONTEXT_H24`, `SUNLIT_CONTEXT_H36`.
-- Nearby text: `H=36`, `36m`, `height 36`.
-- Default fallback: `--default-height 20`.
-
 ## Future CLI Shape
 
-Layer-name height mode:
+First-version command shape:
 
 ```bash
-sunlit convert dxf project_sunlit_clean.dxf \
-  --site-layer SUNLIT_SITE \
-  --context-layer SUNLIT_CONTEXT \
-  --scheme-layer SUNLIT_SCHEME \
-  --height-mode layer-name \
-  --unit m \
-  --north-angle 0 \
-  --output sunlit-output/my-project
+sunlit convert dxf --config sunlit.yaml
 ```
 
-Nearest-text height mode:
+Or, later, a single study command:
 
 ```bash
-sunlit convert dxf project_sunlit_clean.dxf \
-  --site-layer SUNLIT_SITE \
-  --context-layer SUNLIT_CONTEXT \
-  --scheme-layer SUNLIT_SCHEME \
-  --height-layer SUNLIT_HEIGHT \
-  --height-mode nearest-text \
-  --default-height 20 \
-  --unit m \
-  --north-angle 0 \
-  --output sunlit-output/my-project
+sunlit study sunlit.yaml
 ```
 
 The output should be compatible with existing analysis:
@@ -194,21 +220,23 @@ sunlit analyze \
 
 Codex or Claude Code should not claim that arbitrary CAD is automatically supported.
 
-The agent should guide the user through cleanup:
+The agent should not modify the CAD file in the first version.
+
+The agent should guide the user through cleanup, then generate YAML:
 
 - Which layer is the site boundary?
 - Which layer contains existing/context buildings?
 - Which layer contains proposed/scheme buildings?
-- How are heights encoded?
+- What height should be assigned to each relevant layer?
 - What is the CAD unit?
 - Is north aligned with +Y?
 - What is the project location?
 
-Then the agent can call `sunlit convert dxf` and `sunlit analyze`.
+Then the agent should show the generated YAML for user review before calling `sunlit convert dxf` and `sunlit analyze`.
 
 Recommended framing:
 
-Use 10 minutes to clean the CAD layers, then let `sunlit` and the AI agent run repeatable design-stage analysis.
+Use a few minutes to clean the CAD layers, let the AI generate a reviewable `sunlit.yaml`, then let `sunlit` run repeatable design-stage analysis.
 
 ## Non-Goals
 
@@ -216,9 +244,22 @@ First DXF support should not attempt to:
 
 - infer all possible layer naming conventions;
 - repair heavily broken CAD drawings;
+- edit or reorganize the user's CAD automatically;
 - parse arbitrary annotations and title blocks;
 - identify building heights from uncontrolled text;
+- ask the user to choose between several technical height modes;
 - infer true project location from CAD coordinates alone;
 - provide permitting or legal sunlight conclusions.
 
 These may be explored later, but they should not be required for the first DXF implementation.
+
+## Later Extensions
+
+Later versions may support more precise height assignment for complex sites:
+
+- building ID text plus CSV/YAML table;
+- block attributes;
+- nearest-text height matching;
+- AI-assisted cleanup suggestions.
+
+These should remain roadmap items until the first layer-based YAML workflow is stable.
