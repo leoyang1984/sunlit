@@ -25,5 +25,4 @@ Archived documents may still contain useful context, but they should not be trea
 
 ## Notes
 
-- `sunlit-spike-dxf-task-duplicate.md` is a preserved duplicate and should not be used as a live task document.
 - Generated report outputs under `sunlit-output/` are not project documentation.
