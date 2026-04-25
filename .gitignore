@@ -2,6 +2,8 @@
 .venv-*/
 .DS_Store
 agent.md
+sunlit-dev-task-breakdown.md
+sunlit-technical-notes.md
 __pycache__/
 *.py[cod]
 .pytest_cache/
