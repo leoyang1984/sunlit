@@ -102,6 +102,36 @@ sunlit convert obj \
   --output sunlit-output/scheme.cityjson
 ```
 
+## Convert Cleaned DXF To Analysis Inputs
+
+For cleaned DXF files with a reviewed `sunlit.yaml`:
+
+```bash
+sunlit convert dxf \
+  --config examples/dxf/sunlit.yaml \
+  --output sunlit-output/dxf-example
+```
+
+Expected files:
+
+```text
+site.geojson
+context.cityjson
+scheme.cityjson
+conversion_report.md
+```
+
+## Run A Cleaned DXF Study
+
+To convert and analyze a reviewed DXF study in one command:
+
+```bash
+sunlit study examples/dxf/sunlit.yaml \
+  --output sunlit-output/dxf-example
+```
+
+This writes the converted inputs plus `baseline/` and `with-scheme/` report bundles when the YAML contains both context and scheme layers.
+
 ## Verify
 
 ```bash
@@ -111,7 +141,7 @@ sunlit convert obj \
 Current baseline:
 
 ```text
-15 passed
+28 passed
 ```
 
 ## Docs
@@ -120,7 +150,7 @@ Current baseline:
 - [Preparing Data](docs/preparing-data.md)
 - [CLI Reference](docs/cli-reference.md)
 - [FAQ](docs/faq.md)
-- [Future DXF Clean Input Protocol](docs/dxf-clean-input-protocol.md)
+- [DXF Clean Input Protocol](docs/dxf-clean-input-protocol.md)
 - [Examples](examples/README.md)
 - [Document Archive](docs/archive/README.md)
 

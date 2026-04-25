@@ -103,7 +103,13 @@ def analyze(
     try:
         from .render import RenderError, render_heatmap
 
-        render_heatmap(result, boundary_path=boundary, output_path=heatmap_path)
+        render_heatmap(
+            result,
+            boundary_path=boundary,
+            output_path=heatmap_path,
+            scheme_path=scheme,
+            context_path=context,
+        )
     except RenderError as exc:
         console.print(str(exc))
         raise typer.Exit(code=1) from exc
@@ -119,6 +125,95 @@ def analyze(
     console.print(f"Wrote {heatmap_path}")
     console.print(f"Wrote {summary_path}")
     console.print(f"Wrote {metadata_path}")
+    console.print(DISCLAIMER_TEXT_ZH)
+
+
+@app.command()
+def study(
+    config_path: Path = typer.Argument(..., help="sunlit.yaml study config."),
+    output: Path = typer.Option(Path("sunlit-output/study"), help="Output directory."),
+) -> None:
+    """Run a cleaned DXF study from sunlit.yaml through conversion and analysis."""
+    from .analyze import AnalysisError, analyze as run_analysis
+    from .convert.dxf_to_analysis import DxfConversionError, convert_dxf_to_analysis_inputs
+    from .dxf_config import DxfConfigError, load_dxf_study_config
+    from .geometry import GeometryLoadError
+    from .grid import GridError
+    from .models import AnalysisConfig
+    from .render import RenderError, render_heatmap
+    from .report import write_report_files
+
+    try:
+        study_config = load_dxf_study_config(config_path)
+        conversion = convert_dxf_to_analysis_inputs(config_path=config_path, output_dir=output)
+    except (DxfConfigError, DxfConversionError) as exc:
+        console.print(str(exc))
+        raise typer.Exit(code=1) from exc
+
+    analysis_config = AnalysisConfig(
+        latitude=study_config.project.location.lat,
+        longitude=study_config.project.location.lon,
+        date=study_config.analysis.date,
+        time_start=study_config.analysis.time_start,
+        time_end=study_config.analysis.time_end,
+        time_step_minutes=study_config.analysis.time_step,
+        grid_size_meters=study_config.analysis.grid_size,
+        threshold_hours=study_config.analysis.threshold,
+    )
+
+    def write_analysis(
+        label: str,
+        scheme_path: Optional[Path],
+        context_path: Optional[Path],
+    ) -> None:
+        analysis_output = output / label
+        result = run_analysis(
+            scheme_path=scheme_path,
+            context_path=context_path,
+            boundary_path=conversion.site_path,
+            config=analysis_config,
+            timezone=study_config.project.location.timezone,
+        )
+        analysis_output.mkdir(parents=True, exist_ok=True)
+        analysis_path = analysis_output / "analysis.json"
+        heatmap_path = analysis_output / "heatmap.png"
+        analysis_path.write_text(result.model_dump_json(indent=2), encoding="utf-8")
+        render_heatmap(
+            result,
+            boundary_path=conversion.site_path,
+            output_path=heatmap_path,
+            scheme_path=scheme_path,
+            context_path=context_path,
+        )
+        summary_path, metadata_path = write_report_files(
+            result=result,
+            output_dir=analysis_output,
+            scheme_path=scheme_path,
+            context_path=context_path,
+            boundary_path=conversion.site_path,
+            timezone_name=study_config.project.location.timezone,
+        )
+        console.print(f"Wrote {analysis_path}")
+        console.print(f"Wrote {heatmap_path}")
+        console.print(f"Wrote {summary_path}")
+        console.print(f"Wrote {metadata_path}")
+
+    try:
+        console.print(f"Wrote {conversion.site_path}")
+        if conversion.context_path:
+            console.print(f"Wrote {conversion.context_path}")
+        if conversion.scheme_path:
+            console.print(f"Wrote {conversion.scheme_path}")
+        console.print(f"Wrote {conversion.report_path}")
+
+        if conversion.context_path:
+            write_analysis("baseline", scheme_path=None, context_path=conversion.context_path)
+        if conversion.scheme_path:
+            write_analysis("with-scheme", scheme_path=conversion.scheme_path, context_path=conversion.context_path)
+    except (AnalysisError, GeometryLoadError, GridError, RenderError) as exc:
+        console.print(str(exc))
+        raise typer.Exit(code=1) from exc
+
     console.print(DISCLAIMER_TEXT_ZH)
 
 
@@ -172,3 +267,25 @@ def convert_footprint(
         raise typer.Exit(code=1) from exc
     console.print(f"Wrote {output_path}")
     console.print(f"Buildings: {len(cityjson['CityObjects'])}")
+
+
+@convert_app.command("dxf")
+def convert_dxf(
+    config: Path = typer.Option(..., help="sunlit.yaml DXF study config."),
+    output: Path = typer.Option(Path("sunlit-output/dxf"), help="Output directory."),
+) -> None:
+    """Convert cleaned DXF + sunlit.yaml into analysis inputs."""
+    from .convert.dxf_to_analysis import DxfConversionError, convert_dxf_to_analysis_inputs
+
+    try:
+        result = convert_dxf_to_analysis_inputs(config_path=config, output_dir=output)
+    except DxfConversionError as exc:
+        console.print(str(exc))
+        raise typer.Exit(code=1) from exc
+
+    console.print(f"Wrote {result.site_path}")
+    if result.context_path:
+        console.print(f"Wrote {result.context_path}")
+    if result.scheme_path:
+        console.print(f"Wrote {result.scheme_path}")
+    console.print(f"Wrote {result.report_path}")

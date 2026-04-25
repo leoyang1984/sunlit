@@ -52,3 +52,30 @@ sunlit-output/london/baseline/
 ```
 
 `summary.md` contains a non-AI statistical report. AI summary generation is intentionally not wired in yet.
+
+`heatmap.png` is a 2D site-plan style image with the site boundary, sampled sunlight duration, colorbar, threshold marker, north arrow, scale bar, and building footprint overlays when scheme/context CityJSON paths are provided.
+
+## Cleaned DXF Example
+
+If you are starting from a cleaned CAD/DXF file, use the DXF example:
+
+```bash
+sunlit study examples/dxf/sunlit.yaml \
+  --output sunlit-output/dxf-example
+```
+
+To inspect the converted inputs before analysis, run the conversion step separately:
+
+```bash
+sunlit convert dxf \
+  --config examples/dxf/sunlit.yaml \
+  --output sunlit-output/dxf-example
+```
+
+Then run the baseline command shown in:
+
+```text
+sunlit-output/dxf-example/conversion_report.md
+```
+
+The same report includes a with-scheme command when the YAML has scheme layers.

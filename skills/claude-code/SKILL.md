@@ -3,8 +3,9 @@ name: sunlit-claude-code
 version: 0.1.0
 description: |
   Run AI-assisted design-stage ground sunlight analysis with the sunlit CLI.
-  Converts natural-language site/building descriptions into local metric
-  GeoJSON inputs, calls sunlit, and explains outputs in architectural language.
+  Converts natural-language site/building descriptions or cleaned CAD/DXF
+  workflows into local metric inputs, calls sunlit, and explains outputs in
+  architectural language.
 ---
 
 # sunlit for Claude Code
@@ -73,6 +74,58 @@ If the site is `100m x 80m`, the boundary is:
 ```
 
 A building "20m south of the site" sits below the south edge.
+
+## Cleaned CAD/DXF Workflow
+
+Use this path when the user has a CAD site plan or DXF.
+
+Do not claim that `sunlit` can understand arbitrary production CAD. The supported first-version DXF workflow is:
+
+```text
+User cleans CAD geometry.
+AI writes a readable sunlit.yaml.
+User reviews the YAML.
+sunlit converts and analyzes deterministically.
+```
+
+Required cleaned DXF shape:
+
+- site boundary is one closed polyline on a known layer;
+- context/existing buildings are closed polylines on known layers;
+- proposed scheme buildings are optional closed polylines on known layers;
+- each building layer has one reviewed height;
+- CAD unit is `m` or `mm`;
+- north direction is supplied as `north_angle`;
+- unrelated CAD geometry is removed or ignored.
+
+Before running commands, collect or confirm:
+
+- city/location, latitude, longitude, timezone;
+- date, time window, grid size, threshold;
+- DXF file path;
+- site layer;
+- context and scheme layer heights.
+
+Write `sunlit.yaml` and show it to the user for review unless it already exists and the user asked to run it.
+
+After user review, prefer the one-command study flow:
+
+```bash
+sunlit study sunlit.yaml \
+  --output sunlit-output/<session>
+```
+
+This writes converted inputs plus `baseline/` and `with-scheme/` analysis outputs when the YAML contains matching layers.
+
+Use the two-step flow when you need to inspect converted inputs before analysis:
+
+```bash
+sunlit convert dxf \
+  --config sunlit.yaml \
+  --output sunlit-output/<session>
+```
+
+Then use `sunlit-output/<session>/conversion_report.md` for ready-to-run baseline and with-scheme analysis commands.
 
 ## Commands
 

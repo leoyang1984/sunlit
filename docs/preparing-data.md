@@ -1,6 +1,6 @@
 # Preparing Data
 
-`sunlit` currently accepts CityJSON buildings and a projected GeoJSON site boundary.
+`sunlit` accepts CityJSON buildings and a projected GeoJSON site boundary. It can also convert projected GeoJSON footprints, simple OBJ footprint faces, and cleaned DXF workflows into those analysis inputs.
 
 ## Coordinate Rule
 
@@ -76,3 +76,67 @@ Example `meta.json`:
 `sunlit convert obj` currently supports footprint faces and extrudes them to LOD1 solids.
 
 It does not yet support wrapping arbitrary closed OBJ meshes into CityJSON solids.
+
+## Option C: Cleaned DXF + `sunlit.yaml`
+
+Input:
+
+- cleaned DXF file;
+- one dedicated closed polyline site boundary layer;
+- closed polyline context/existing building layers;
+- optional closed polyline proposed scheme layers;
+- one reviewed height per building layer;
+- CAD unit, currently `m` or `mm`;
+- north direction as `north_angle`;
+- project location for sun position.
+
+This path does not automatically clean messy CAD drawings. Create a separate cleaned DXF and remove or ignore roads, hatches, dimensions, title blocks, furniture, grids, and unrelated text.
+
+Example `sunlit.yaml`:
+
+```yaml
+project:
+  location:
+    city: Shanghai
+    lat: 31.23
+    lon: 121.47
+    timezone: Asia/Shanghai
+cad:
+  file: project_clean.dxf
+  unit: m
+  north_angle: 0
+layers:
+  site: 红线
+  context:
+    周边建筑_高层:
+      height: 54
+  scheme:
+    方案塔楼:
+      height: 72
+analysis:
+  date: 2026-01-20
+  time_start: "09:00"
+  time_end: "15:00"
+  time_step: 30
+  grid_size: 3
+  threshold: 2
+```
+
+Convert:
+
+```bash
+sunlit convert dxf \
+  --config examples/dxf/sunlit.yaml \
+  --output sunlit-output/dxf-example
+```
+
+Expected files:
+
+```text
+site.geojson
+context.cityjson
+scheme.cityjson
+conversion_report.md
+```
+
+The generated `site.geojson` is tagged as local meter coordinates, so CAD-local coordinates such as `0..120` are accepted by `sunlit analyze`. Use `conversion_report.md` for the exact baseline and with-scheme analysis commands.

@@ -22,7 +22,12 @@ Yes, if the OBJ contains one `o` or `g` group per building footprint face. Use `
 
 Arbitrary closed OBJ mesh conversion is not implemented yet.
 
+## Can I use CAD or DXF files?
+
+Yes, if you make a cleaned DXF copy first. Use closed polylines for the site boundary and building footprints, then map layers and heights in `sunlit.yaml`.
+
+`sunlit` does not automatically clean arbitrary CAD drawings, repair broken lines, infer layers, or read heights from uncontrolled annotations.
+
 ## Does AI summary generation work?
 
 Not yet. The current `summary.md` is a deterministic statistical report. AI summary integration is a later step.
-

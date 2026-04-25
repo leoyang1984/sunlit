@@ -51,6 +51,30 @@ def load_boundary(path: Path) -> BoundaryGeometry:
     return boundary
 
 
+def boundary_declares_local_meters(path: Path) -> bool:
+    if not path.exists():
+        return False
+    try:
+        with path.open() as file:
+            data = json.load(file)
+    except Exception:
+        return False
+
+    features: list[dict[str, Any]]
+    if data.get("type") == "FeatureCollection":
+        features = data.get("features", [])
+    elif data.get("type") == "Feature":
+        features = [data]
+    else:
+        features = []
+
+    return any(
+        feature.get("properties", {}).get("source") == "dxf"
+        and feature.get("properties", {}).get("coordinate_system") == "local_meters"
+        for feature in features
+    )
+
+
 def looks_like_wgs84(boundary: BoundaryGeometry) -> bool:
     minx, miny, maxx, maxy = boundary.bounds
     return -180 <= minx <= 180 and -180 <= maxx <= 180 and -90 <= miny <= 90 and -90 <= maxy <= 90
@@ -60,10 +84,11 @@ def generate_grid_inside(
     boundary: BoundaryGeometry,
     spacing: float,
     z: float = 0.0,
+    allow_wgs84_like: bool = False,
 ) -> list[EvaluationPoint]:
     if spacing <= 0:
         raise GridError("Grid size must be greater than 0.")
-    if looks_like_wgs84(boundary):
+    if not allow_wgs84_like and looks_like_wgs84(boundary):
         raise GridError(
             "Boundary coordinates look like WGS84 longitude/latitude. "
             "MVP requires a projected meter-based boundary."

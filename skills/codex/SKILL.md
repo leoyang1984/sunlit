@@ -4,7 +4,8 @@ version: 0.1.0
 description: |
   Operate the sunlit CLI for design-stage ground sunlight analysis.
   Use when the user asks for sunlight analysis, 日照分析, shadow analysis,
-  site sunlight potential, or AI-assisted building massing sunlight review.
+  site sunlight potential, CAD/DXF sunlight workflow, or AI-assisted
+  building massing sunlight review.
 ---
 
 # sunlit for Codex
@@ -97,6 +98,81 @@ sunlit-output/<session>/
 Use `site.geojson` for the site boundary and `context.geojson` / `scheme.geojson` for building footprints.
 
 All building features need a numeric `height` property.
+
+## Cleaned DXF Workflow
+
+Use this when the user provides CAD/DXF or asks to analyze a CAD site plan.
+
+Do not promise automatic cleanup of arbitrary CAD. The first supported DXF path requires a cleaned DXF subset:
+
+- one dedicated closed polyline site boundary layer;
+- closed polyline context/existing building footprint layers;
+- optional closed polyline scheme building footprint layers;
+- roads, hatches, dimensions, title blocks, furniture, grids, and unrelated text removed or ignored;
+- known CAD unit, currently `m` or `mm`;
+- known north direction as `north_angle`;
+- layer heights reviewed by the user.
+
+Ask for missing essentials before writing `sunlit.yaml`:
+
+- project city/location, latitude, longitude, timezone;
+- analysis date, time window, grid size, threshold;
+- DXF file path;
+- CAD unit and north angle;
+- site layer name;
+- context layer names and heights;
+- scheme layer names and heights, if any.
+
+Write a reviewable `sunlit.yaml` next to the cleaned DXF or in the working output folder. Show the YAML to the user before running conversion when the user has not already approved it.
+
+Example:
+
+```yaml
+project:
+  location:
+    city: Shanghai
+    lat: 31.23
+    lon: 121.47
+    timezone: Asia/Shanghai
+cad:
+  file: project_clean.dxf
+  unit: m
+  north_angle: 0
+layers:
+  site: 红线
+  context:
+    周边建筑_高层:
+      height: 54
+  scheme:
+    方案塔楼:
+      height: 72
+analysis:
+  date: 2026-01-20
+  time_start: "09:00"
+  time_end: "15:00"
+  time_step: 30
+  grid_size: 3
+  threshold: 2
+```
+
+After user review, prefer the one-command study flow:
+
+```bash
+sunlit study sunlit.yaml \
+  --output sunlit-output/<session>
+```
+
+This writes converted inputs plus `baseline/` and `with-scheme/` analysis outputs when the YAML contains matching layers.
+
+Use the two-step flow when you need to inspect converted inputs before analysis:
+
+```bash
+sunlit convert dxf \
+  --config sunlit.yaml \
+  --output sunlit-output/<session>
+```
+
+Then run baseline and with-scheme analysis using the generated `conversion_report.md` commands. The generated DXF site boundary is tagged as local meter coordinates so local CAD coordinates such as `0..120` are valid for analysis.
 
 ## Convert Inputs
 

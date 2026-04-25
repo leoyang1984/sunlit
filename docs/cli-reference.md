@@ -16,6 +16,17 @@ Check whether a CityJSON file can be loaded as building mesh.
 sunlit inspect-cityjson sample.cityjson
 ```
 
+## `sunlit study`
+
+Run a reviewed cleaned-DXF `sunlit.yaml` through conversion and analysis.
+
+```bash
+sunlit study examples/dxf/sunlit.yaml \
+  --output sunlit-output/dxf-example
+```
+
+This command currently uses the DXF study YAML schema. It writes `site.geojson`, `context.cityjson`, `scheme.cityjson`, `conversion_report.md`, and analysis bundles such as `baseline/` and `with-scheme/` when the corresponding layers exist.
+
 ## `sunlit analyze`
 
 Run ground-grid sunlight analysis.
@@ -79,3 +90,31 @@ sunlit convert obj scheme.obj \
   --meta meta.json \
   --output scheme.cityjson
 ```
+
+## `sunlit convert dxf`
+
+Convert a cleaned DXF plus reviewed `sunlit.yaml` into analysis inputs.
+
+Required:
+
+- `--config PATH`
+- `--output PATH`
+
+The cleaned DXF workflow supports closed `LWPOLYLINE` / `POLYLINE` footprints on configured layers. It does not clean arbitrary CAD drawings or infer heights from annotations.
+
+```bash
+sunlit convert dxf \
+  --config examples/dxf/sunlit.yaml \
+  --output sunlit-output/dxf-example
+```
+
+Expected files:
+
+```text
+site.geojson
+context.cityjson
+scheme.cityjson
+conversion_report.md
+```
+
+The generated `conversion_report.md` includes copyable `sunlit analyze` commands for baseline and with-scheme runs.

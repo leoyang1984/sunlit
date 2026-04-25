@@ -1,8 +1,8 @@
 # DXF Clean Input Protocol
 
-Status: future development guide. `sunlit convert dxf` is not implemented yet.
+Status: development guide. Minimal `sunlit convert dxf` support is implemented for the cleaned-DXF subset.
 
-This document records the product boundary for future DXF support.
+This document records the product boundary for cleaned DXF support.
 
 ## Product Principle
 
@@ -139,7 +139,7 @@ Do not expose multiple height modes in the first user-facing workflow. Internall
 
 ## Coordinate Model
 
-Future DXF support should separate two concepts:
+DXF support separates two concepts:
 
 1. CAD geometry coordinates.
 2. Project location for sun position.
@@ -189,10 +189,10 @@ First-version command shape:
 sunlit convert dxf --config sunlit.yaml
 ```
 
-Or, later, a single study command:
+Or a single study command after the YAML has been reviewed:
 
 ```bash
-sunlit study sunlit.yaml
+sunlit study sunlit.yaml --output sunlit-output/my-project
 ```
 
 The output should be compatible with existing analysis:
@@ -203,7 +203,7 @@ sunlit-output/my-project/context.cityjson
 sunlit-output/my-project/scheme.cityjson
 ```
 
-Then:
+The explicit two-step workflow then runs:
 
 ```bash
 sunlit analyze \
@@ -232,7 +232,7 @@ The agent should guide the user through cleanup, then generate YAML:
 - Is north aligned with +Y?
 - What is the project location?
 
-Then the agent should show the generated YAML for user review before calling `sunlit convert dxf` and `sunlit analyze`.
+Then the agent should show the generated YAML for user review before calling `sunlit study`, or before calling `sunlit convert dxf` and `sunlit analyze` when an explicit two-step workflow is useful.
 
 Recommended framing:
 

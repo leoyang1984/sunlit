@@ -8,7 +8,7 @@ import trimesh
 from . import __version__
 from .constants import DISCLAIMER_TEXT_ZH
 from .geometry import load_cityjson_building_mesh
-from .grid import generate_grid_inside, grid_bounds, load_boundary
+from .grid import boundary_declares_local_meters, generate_grid_inside, grid_bounds, load_boundary
 from .models import AnalysisConfig, AnalysisMode, AnalysisResult, EvaluationPoint, Statistics, SunPosition
 from .sun_position import compute_sun_positions
 
@@ -118,7 +118,11 @@ def analyze(
     paths = [path for path in (scheme_path, context_path) if path is not None]
     mesh = load_obstacle_mesh(paths)
     boundary = load_boundary(boundary_path)
-    points = generate_grid_inside(boundary, spacing=config.grid_size_meters)
+    points = generate_grid_inside(
+        boundary,
+        spacing=config.grid_size_meters,
+        allow_wgs84_like=boundary_declares_local_meters(boundary_path),
+    )
     sun_positions = compute_sun_positions(
         latitude=config.latitude,
         longitude=config.longitude,
