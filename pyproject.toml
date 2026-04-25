@@ -31,6 +31,7 @@ dependencies = [
   "pydantic>=2.0.0",
   "pvlib>=0.10.0",
   "rich>=13.0.0",
+  "rtree>=1.0.0",
   "shapely>=2.0.0",
   "trimesh>=4.0.0",
   "typer>=0.12.0",
