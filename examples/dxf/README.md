@@ -40,6 +40,14 @@ sunlit study examples/dxf/sunlit.yaml \
   --output sunlit-output/dxf-example
 ```
 
+The one-command study also writes:
+
+```text
+sunlit-output/dxf-example/presentation.html
+```
+
+Open it locally to switch between baseline and with-scheme results and review the heatmap, summary, metadata, JSON, and conversion report.
+
 Run a context-only baseline analysis:
 
 ```bash

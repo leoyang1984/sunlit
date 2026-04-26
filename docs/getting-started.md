@@ -79,3 +79,5 @@ sunlit-output/dxf-example/conversion_report.md
 ```
 
 The same report includes a with-scheme command when the YAML has scheme layers.
+
+`sunlit study` also writes `presentation.html` at the output root. Open it locally to switch between available runs and inspect the heatmap, summary, metadata, JSON, and conversion report.

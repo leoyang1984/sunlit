@@ -132,6 +132,7 @@ def analyze(
 def study(
     config_path: Path = typer.Argument(..., help="sunlit.yaml study config."),
     output: Path = typer.Option(Path("sunlit-output/study"), help="Output directory."),
+    viewer: bool = typer.Option(True, "--viewer/--no-viewer", help="Write presentation.html study viewer."),
 ) -> None:
     """Run a cleaned DXF study from sunlit.yaml through conversion and analysis."""
     from .analyze import AnalysisError, analyze as run_analysis
@@ -142,6 +143,7 @@ def study(
     from .models import AnalysisConfig
     from .render import RenderError, render_heatmap
     from .report import write_report_files
+    from .viewer import ViewerError, render_study_viewer
 
     try:
         study_config = load_dxf_study_config(config_path)
@@ -213,6 +215,14 @@ def study(
     except (AnalysisError, GeometryLoadError, GridError, RenderError) as exc:
         console.print(str(exc))
         raise typer.Exit(code=1) from exc
+
+    if viewer:
+        try:
+            viewer_path = render_study_viewer(output)
+        except ViewerError as exc:
+            console.print(str(exc))
+            raise typer.Exit(code=1) from exc
+        console.print(f"Wrote {viewer_path}")
 
     console.print(DISCLAIMER_TEXT_ZH)
 

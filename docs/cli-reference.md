@@ -27,6 +27,8 @@ sunlit study examples/dxf/sunlit.yaml \
 
 This command currently uses the DXF study YAML schema. It writes `site.geojson`, `context.cityjson`, `scheme.cityjson`, `conversion_report.md`, and analysis bundles such as `baseline/` and `with-scheme/` when the corresponding layers exist.
 
+By default it also writes `presentation.html`, a deterministic offline viewer for switching runs and inspecting the map, summary, metadata, raw JSON, and conversion report. Use `--no-viewer` to skip it.
+
 ## `sunlit analyze`
 
 Run ground-grid sunlight analysis.

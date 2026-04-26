@@ -163,6 +163,7 @@ sunlit study sunlit.yaml \
 ```
 
 This writes converted inputs plus `baseline/` and `with-scheme/` analysis outputs when the YAML contains matching layers.
+It also writes `presentation.html`, an offline deterministic viewer for map, summary, metadata, JSON, and conversion report review.
 
 Use the two-step flow when you need to inspect converted inputs before analysis:
 

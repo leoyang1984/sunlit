@@ -1,6 +1,6 @@
 # Study Viewer Development Plan
 
-Status: planning
+Status: first version implemented
 
 This plan describes a deterministic local HTML viewer for `sunlit` study outputs.
 
@@ -169,7 +169,7 @@ Optional visual QA:
 - Should summary Markdown be rendered with a tiny built-in parser or shown as formatted plain text first?
 - Should the viewer include a side-by-side compare mode in the first release, or defer it?
 
-## Recommended First Milestone
+## First Milestone
 
 Build `sunlit.viewer` with:
 
@@ -179,3 +179,10 @@ Build `sunlit.viewer` with:
 - Map/Summary/Metadata/JSON tabs;
 - no browser dependency;
 - tests against the existing DXF example workflow.
+
+Implementation status:
+
+- `src/sunlit/viewer.py` generates root-level `presentation.html`.
+- `sunlit study` writes the viewer by default.
+- `sunlit study --no-viewer` skips viewer generation.
+- The viewer supports baseline / with-scheme switching, Map / Summary / Metadata / JSON / Conversion tabs, and fit / 100% / 150% map viewing.

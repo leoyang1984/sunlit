@@ -196,4 +196,45 @@ def test_cli_study_runs_convert_and_analysis(tmp_path):
     assert (tmp_path / "baseline" / "heatmap.png").read_bytes().startswith(b"\x89PNG")
     assert (tmp_path / "with-scheme" / "analysis.json").exists()
     assert (tmp_path / "with-scheme" / "heatmap.png").read_bytes().startswith(b"\x89PNG")
+    viewer = tmp_path / "presentation.html"
+    assert viewer.exists()
+    viewer_text = viewer.read_text(encoding="utf-8")
+    assert "Baseline" in viewer_text
+    assert "With Scheme" in viewer_text
+    assert "baseline/heatmap.png" in viewer_text
+    assert "with-scheme/heatmap.png" in viewer_text
+    assert "595 / 1014" not in viewer_text
+    assert "Heatmap pixels are embedded from deterministic output" in viewer_text
     assert "Wrote" in result.output
+
+
+def test_cli_study_viewer_handles_context_only(tmp_path):
+    config_path = tmp_path / "sunlit.yaml"
+    _write_config(config_path, "test.dxf")
+    doc = _new_doc()
+    modelspace = doc.modelspace()
+    _add_closed_polyline(modelspace, "红线", [(0, 0), (60, 0), (60, 60), (0, 60)])
+    _add_closed_polyline(modelspace, "周边建筑", [(70, 10), (90, 10), (90, 40), (70, 40)])
+    doc.saveas(tmp_path / "test.dxf")
+
+    output_dir = tmp_path / "study"
+    result = runner.invoke(
+        app,
+        [
+            "study",
+            str(config_path),
+            "--output",
+            str(output_dir),
+        ],
+    )
+
+    assert result.exit_code == 0, result.output
+    assert (output_dir / "baseline" / "analysis.json").exists()
+    assert not (output_dir / "with-scheme").exists()
+    viewer = output_dir / "presentation.html"
+    assert viewer.exists()
+    viewer_text = viewer.read_text(encoding="utf-8")
+    assert "Baseline" in viewer_text
+    assert "With Scheme" not in viewer_text
+    assert "baseline/heatmap.png" in viewer_text
+    assert "with-scheme/heatmap.png" not in viewer_text

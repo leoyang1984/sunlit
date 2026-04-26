@@ -132,6 +132,14 @@ sunlit study examples/dxf/sunlit.yaml \
 
 This writes the converted inputs plus `baseline/` and `with-scheme/` report bundles when the YAML contains both context and scheme layers.
 
+It also writes:
+
+```text
+presentation.html
+```
+
+Open this file locally to switch between runs, inspect the heatmap, read `summary.md`, and review `analysis.json` without changing the deterministic output files.
+
 ## Verify
 
 ```bash
@@ -141,7 +149,7 @@ This writes the converted inputs plus `baseline/` and `with-scheme/` report bund
 Current baseline:
 
 ```text
-28 passed
+29 passed
 ```
 
 ## Docs
